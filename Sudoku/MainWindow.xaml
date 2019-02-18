@@ -1,0 +1,252 @@
+﻿<Window x:Class="TexiService.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TexiService"
+        mc:Ignorable="d"
+        x:Name="window"
+        Title="MainWindow"
+        Height="850"
+        Width="880">
+
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Padding" Value="3"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        <Style TargetType="GroupBox">
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="BorderBrush" Value="Black"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="3"/>
+            <Setter Property="Margin" Value="2"/>
+        </Style>
+        <Style TargetType="Border">
+            <Setter Property="BorderBrush" Value="Black"/>
+            <Setter Property="BorderThickness" Value="3"/>
+        </Style>
+        <Style TargetType="DataGrid">
+            <Setter Property="BorderBrush" Value="Black"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Margin" Value="3"/>
+            <Setter Property="ItemsSource" Value="{Binding}"/>
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+        </Style>
+    </Window.Resources>
+
+    <DockPanel>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="8*"/>
+                <RowDefinition Height="2*"/>
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0"
+                    Width="480">
+                <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Auto">
+                    <Grid Name="mainGrid"
+                          VerticalAlignment="Top"
+                          Margin="5"/>
+                </ScrollViewer>
+            </Border>
+
+            <GroupBox Header="Zone info"
+                      Grid.Row="1"
+                      DockPanel.Dock="Bottom">
+                <Grid>
+                    <Grid.Resources>
+                        <Style x:Key="right" TargetType="TextBlock">
+                            <Setter  Property="HorizontalAlignment" Value="Right"/>
+                        </Style>
+                        <Style x:Key="left" TargetType="TextBlock">
+                            <Setter  Property="HorizontalAlignment" Value="Left"/>
+                            <Setter Property="Margin" Value="3,0,0,0"/>
+                        </Style>
+                    </Grid.Resources>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="8*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Style="{StaticResource right}" Text="Location:"/>
+                    <TextBlock Grid.Row="1" Style="{StaticResource right}" Text="Type:"/>
+
+                    <TextBlock Name="tbZoneLocation" Grid.Column = "1" Grid.Row="0" Style="{StaticResource left}"/>
+                    <TextBlock Name="tbZoneType" Grid.Column = "1" Grid.Row="1" Style="{StaticResource left}"/>
+
+                    <GroupBox Name="gbInfo"
+                              Grid.Column="2"
+                              Grid.RowSpan="2"
+                              Visibility="Hidden">
+                        <Grid Name="gridInfo">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Name="gridInfoTb00" Grid.Row="0" Style="{StaticResource right}"/>
+                            <TextBlock Name="gridInfoTb01" Grid.Row="1" Style="{StaticResource right}"/>
+                            <TextBlock Name="gridInfoTb02" Grid.Row="2" Style="{StaticResource right}"/>
+
+                            <TextBlock Grid.Row="0" Grid.Column="1" Name="gridInfoTb0" Style="{StaticResource left}"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" Name="gridInfoTb1" Style="{StaticResource left}"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" Name="gridInfoTb2" Style="{StaticResource left}"/>
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+            </GroupBox>
+        </Grid>
+
+        <Border Name="infoBorder">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <GroupBox Header="Texis">
+                        <StackPanel>
+                            <DataGrid Name="texiList"
+                                      Height="140"
+                                      SelectedCellsChanged="SelectTexi">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="No" Binding="{Binding Number}"/>
+                                    <DataGridTextColumn Header="Row" Binding="{Binding Row}"/>
+                                    <DataGridTextColumn Header="Column" Binding="{Binding Col}"/>
+                                    <DataGridTextColumn Header="Destination" Binding="{Binding Destination}"/>
+                                    <DataGridTextColumn Header="Status" Binding="{Binding Status}"/>
+                                    <DataGridTextColumn Header="Charge" Binding="{Binding Charge}"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <GroupBox Header="Edit texi list">
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Content="Add"
+                                Click="AddTexi"/>
+                                    <Button Content="Remove" 
+                                Click="RemoveTexi"/>
+                                </StackPanel>
+                            </GroupBox>
+                            <GroupBox Header="Move texi">
+                                <StackPanel Orientation="Vertical">
+                                    <StackPanel Orientation="Horizontal"
+                                Name="moveControls">
+                                        <Border Height="30"
+                                BorderThickness="1">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBox Width="30"
+                                                         VerticalAlignment="Bottom"
+                                                         BorderThickness="0"
+                                                         FontSize="20"
+                                                         Name="moveToRow"/>
+                                                <TextBlock Text=","
+                                           VerticalAlignment="Bottom"
+                                           FontSize="20"/>
+                                                <TextBox Width="30"
+                                         VerticalAlignment="Bottom"
+                                         BorderThickness="0"
+                                         FontSize="20"
+                                         Name="moveToCol"/>
+                                            </StackPanel>
+                                        </Border>
+                                        <Button Content="Go" 
+                                            Click="MoveTexi"/>
+                                    </StackPanel>
+
+                                    <TextBlock Name="texiTb"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </GroupBox>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <GroupBox Header="Employees">
+                        <StackPanel>
+                            <ScrollViewer Name="svEmployees"
+                                          VerticalScrollBarVisibility="Auto">
+                                <DataGrid Name="employeeList"
+                                      Height="140"
+                                      SelectionChanged="SelectEmployee">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Id" Binding="{Binding Id}"/>
+                                        <DataGridTextColumn Header="First name" Binding="{Binding First}"/>
+                                        <DataGridTextColumn Header="Last name" Binding="{Binding Last}"/>
+                                        <DataGridTextColumn Header="Row" Binding="{Binding Row}"/>
+                                        <DataGridTextColumn Header="Col" Binding="{Binding Col}"/>
+                                        <DataGridTextColumn Header="Status" Binding="{Binding Status}"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </ScrollViewer>
+                            <GroupBox Header="Edit employees list">
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Content="Add"
+                                        Click="AddEmployee"/>
+                                    <Button Content="Remove" 
+                                        Click="RemoveEmployee"/>
+                                    <Button Content="Call texi" 
+                                        Click="CallTexi"/>
+                                    <StackPanel Orientation="Horizontal"
+                                            Name="destinationControls">
+                                        <Border Height="30"
+                                            BorderThickness="1">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBox Width="30"
+                                                     VerticalAlignment="Bottom"
+                                                     BorderThickness="0"
+                                                     FontSize="20"
+                                                     Name="destToRow"/>
+                                                <TextBlock Text=","
+                                                       VerticalAlignment="Bottom"
+                                                       FontSize="20"/>
+                                                <TextBox Width="30"
+                                                     VerticalAlignment="Bottom"
+                                                     BorderThickness="0"
+                                                     FontSize="20"
+                                                     Name="destToCol"/>
+                                            </StackPanel>
+                                        </Border>
+                                        <TextBlock Name="employeeTb"
+                                               VerticalAlignment="Center"
+                                               Visibility="Hidden"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </GroupBox>
+                            <TextBlock Name="tbEmployees"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Header="Log">
+                        <ItemsControl Name="icLog"
+                                              Height="180">
+                            <ItemsControl.Template>
+                                <ControlTemplate>
+                                    <ScrollViewer Name="svLog"
+                                                          VerticalScrollBarVisibility="Auto">
+                                        <ItemsPresenter/>
+                                    </ScrollViewer>
+                                </ControlTemplate>
+                            </ItemsControl.Template>
+
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock TextWrapping="Wrap"
+                                                       Text="{Binding message}"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </GroupBox>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+    </DockPanel>
+</Window>
